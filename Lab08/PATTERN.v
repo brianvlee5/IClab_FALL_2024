@@ -78,7 +78,7 @@ reg signed [48:0] gold_V [0:7][0:7];
 reg signed [48:0] gold_matmul1 [0:7][0:7];
 reg signed [48:0] gold_scale [0:7][0:7];
 reg signed [48:0] gold_RELU [0:7][0:7];
-reg signed [48:0] gold_out_data [0:7][0:7];
+reg signed [63:0] gold_out_data [0:7][0:7];
 
 //================================================================
 // clock
@@ -319,21 +319,21 @@ task pattern_input_task; begin
 
 	$fwrite(fout_debug, "MatMul 1 :\n\n");
 	for(i=0 ; i<gold_T ; i=i+1) begin
-		for(j=0 ; j<gold_T ; j=j+1) $fwrite(fout_debug, "%12d ", gold_matmul1[i][j]);
+		for(j=0 ; j<gold_T ; j=j+1) $fwrite(fout_debug, "%15d ", gold_matmul1[i][j]);
 		$fwrite(fout_debug, "\n");
 	end
 	$fwrite(fout_debug, "\n");
 
 	$fwrite(fout_debug, "after scale + relu :\n\n");
 	for(i=0 ; i<gold_T ; i=i+1) begin
-		for(j=0 ; j<gold_T ; j=j+1) $fwrite(fout_debug, "%12d ", gold_RELU[i][j]);
+		for(j=0 ; j<gold_T ; j=j+1) $fwrite(fout_debug, "%15d ", gold_RELU[i][j]);
 		$fwrite(fout_debug, "\n");
 	end
 	$fwrite(fout_debug, "\n");
 
 	$fwrite(fout_debug, "Output data :\n\n");
 	for(i=0 ; i<gold_T ; i=i+1) begin
-		for(j=0 ; j<8 ; j=j+1) $fwrite(fout_debug, "%15d ", gold_out_data[i][j]);
+		for(j=0 ; j<8 ; j=j+1) $fwrite(fout_debug, "%19d ", gold_out_data[i][j]);
 		$fwrite(fout_debug, "\n");
 	end
 	$fwrite(fout_debug, "\n");
