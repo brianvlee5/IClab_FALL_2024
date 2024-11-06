@@ -352,9 +352,25 @@ task pattern_input_task; begin
 			in_data = 8'dx;
 
 		w_Q = gold_wQ[i/8][i%8];
-		w_K = gold_wK[i/8][i%8];
-		w_V = gold_wV[i/8][i%8];
+		w_K = 8'dx;
+		w_V = 8'dx;
 
+		@(negedge clk); 
+	end
+
+	for(i=0 ; i<64 ; i=i+1) begin
+		w_Q = 8'dx;
+		w_K = gold_wK[i/8][i%8];
+		w_V = 8'dx;
+		in_data = 8'dx;
+		@(negedge clk); 
+	end
+
+	for(i=0 ; i<64 ; i=i+1) begin
+		w_Q = 8'dx;
+		w_K = 8'dx;
+		w_V = gold_wV[i/8][i%8];
+		in_data = 8'dx;
 		@(negedge clk); 
 	end
 	
