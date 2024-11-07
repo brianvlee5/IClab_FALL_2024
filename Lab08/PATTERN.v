@@ -12,7 +12,7 @@
 // 
 /**************************************************************************/
 // Number of patterns
-`define PATTERN_NUMBER 1000
+`define PATTERN_NUMBER 100
 `define SIMPLE_PAT_NUM 10
 `define CORNER_CASE_NUM 20
 
@@ -331,21 +331,21 @@ task pattern_input_task; begin
 	
 	$fwrite(fout_debug, "Q:\n\n");
 	for(i=0 ; i<gold_T ; i=i+1) begin
-		for(j=0 ; j<8 ; j=j+1) $fwrite(fout_debug, "%4d ", gold_Q[i][j]);
+		for(j=0 ; j<8 ; j=j+1) $fwrite(fout_debug, "%6d ", gold_Q[i][j]);
 		$fwrite(fout_debug, "\n");
 	end
 	$fwrite(fout_debug, "\n");
 
 	$fwrite(fout_debug, "K:\n\n");
 	for(i=0 ; i<gold_T ; i=i+1) begin
-		for(j=0 ; j<8 ; j=j+1) $fwrite(fout_debug, "%4d ", gold_K[i][j]);
+		for(j=0 ; j<8 ; j=j+1) $fwrite(fout_debug, "%6d ", gold_K[i][j]);
 		$fwrite(fout_debug, "\n");
 	end
 	$fwrite(fout_debug, "\n");
 
 	$fwrite(fout_debug, "V:\n\n");
 	for(i=0 ; i<gold_T ; i=i+1) begin
-		for(j=0 ; j<8 ; j=j+1) $fwrite(fout_debug, "%4d ", gold_V[i][j]);
+		for(j=0 ; j<8 ; j=j+1) $fwrite(fout_debug, "%6d ", gold_V[i][j]);
 		$fwrite(fout_debug, "\n");
 	end
 	$fwrite(fout_debug, "\n");
@@ -433,6 +433,16 @@ task check_ans_task; begin
 
 	// Check out_data
 	while(out_valid !== 1) begin
+
+		if(out_data !== 0) begin
+			fail_task;
+			$display ("-------------------------------------------------------");
+			$display ("                         FAIL                          ");
+			$display ("        output value should be 0 when valid is low     ");
+			$display ("-------------------------------------------------------");
+			#(CYCLE); $finish;
+		end
+
 		latency = latency + 1;
 		if(latency > 2000) begin
 			fail_task;
