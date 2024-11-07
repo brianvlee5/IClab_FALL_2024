@@ -12,8 +12,9 @@
 // 
 /**************************************************************************/
 // Number of patterns
-`define PATTERN_NUMBER 100
+`define PATTERN_NUMBER 1000
 `define SIMPLE_PAT_NUM 10
+`define CORNER_CASE_NUM 20
 
 module PATTERN(
 	// Output signals
@@ -41,7 +42,7 @@ output reg signed [7:0] w_K;
 output reg signed [7:0] w_V;
 
 input out_valid;
-input signed [47:0] out_data;
+input signed [63:0] out_data;
 
 //================================================================
 // Clock
@@ -54,6 +55,7 @@ input signed [47:0] out_data;
 integer SEED = 5487;
 integer PAT_NUM = `PATTERN_NUMBER;
 integer SIMPLE_PAT_NUM = `SIMPLE_PAT_NUM;
+integer CORNER_CASE_NUM = `CORNER_CASE_NUM;
 integer pat_count, set_count;
 integer latency, total_latency;
 integer i, j, k, l;
@@ -123,7 +125,6 @@ always @(*) begin
 end
 
 task reset_task; begin
-	fout_debug = $fopen("../00_TESTBED/debug.txt", "w");
 
     // Initialize output signals
     rst_n 		= 1'b1;
@@ -201,6 +202,28 @@ task pattern_input_task; begin
 			end
 		end
 	end
+	else if(pat_count > PAT_NUM - CORNER_CASE_NUM)begin
+		if(pat_count % 2 == 0) begin
+			for(i=0 ; i<8 ; i+=1) begin
+				for(j=0 ; j<8 ; j+=1) begin
+					gold_in_data[i][j] 	= 127;
+					gold_wQ[i][j] 	   	= 127;
+					gold_wK[i][j] 	   	= 127;
+					gold_wV[i][j] 	   	= 127;
+				end
+			end
+		end
+		else begin
+			for(i=0 ; i<8 ; i+=1) begin
+				for(j=0 ; j<8 ; j+=1) begin
+					gold_in_data[i][j] 	= -128;
+					gold_wQ[i][j] 	   	= -128;
+					gold_wK[i][j] 	   	= -128;
+					gold_wV[i][j] 	   	= -128;
+				end
+			end
+		end
+	end
 	else begin
 		for(i=0 ; i<8 ; i+=1) begin
 			for(j=0 ; j<8 ; j+=1) begin
@@ -273,6 +296,7 @@ task pattern_input_task; begin
 
 
 	// Write debug.txt
+	fout_debug = $fopen("../00_TESTBED/debug.txt", "w");
 	$fwrite(fout_debug, "// ==================== PATTERN %5d ==================== //\n\n", pat_count+1);
 
 	$fwrite(fout_debug, "T :\n");
@@ -354,6 +378,8 @@ task pattern_input_task; begin
 		$fwrite(fout_debug, "\n");
 	end
 	$fwrite(fout_debug, "\n");
+
+	$fclose(fout_debug);
 
 	// Pattern input
 	in_valid = 1'b1;
