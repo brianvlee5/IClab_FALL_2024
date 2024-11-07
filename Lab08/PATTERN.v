@@ -213,6 +213,16 @@ task pattern_input_task; begin
 	end
 
 	// Calculate answer
+	for(i=0; i<8; i+=1) begin
+		for(j=0; j<8; j+=1) begin
+            gold_Q[i][j] = 0;
+            gold_K[i][j] = 0;
+            gold_V[i][j] = 0;
+			gold_matmul1[i][j] = 0;
+			gold_out_data[i][j] = 0;
+		end
+	end
+
     for (i = 0; i < 8; i = i + 1) begin
         for (j = 0; j < 8; j = j + 1) begin
             for (k = 0; k < 8; k = k + 1) begin
@@ -294,7 +304,7 @@ task pattern_input_task; begin
 		$fwrite(fout_debug, "\n");
 	end
 	$fwrite(fout_debug, "\n");
-	/*
+	
 	$fwrite(fout_debug, "Q:\n\n");
 	for(i=0 ; i<gold_T ; i=i+1) begin
 		for(j=0 ; j<8 ; j=j+1) $fwrite(fout_debug, "%4d ", gold_Q[i][j]);
@@ -315,11 +325,18 @@ task pattern_input_task; begin
 		$fwrite(fout_debug, "\n");
 	end
 	$fwrite(fout_debug, "\n");
-	*/
+	
 
 	$fwrite(fout_debug, "MatMul 1 :\n\n");
 	for(i=0 ; i<gold_T ; i=i+1) begin
 		for(j=0 ; j<gold_T ; j=j+1) $fwrite(fout_debug, "%15d ", gold_matmul1[i][j]);
+		$fwrite(fout_debug, "\n");
+	end
+	$fwrite(fout_debug, "\n");
+
+	$fwrite(fout_debug, "after relu :\n\n");
+	for(i=0 ; i<gold_T ; i=i+1) begin
+		for(j=0 ; j<gold_T ; j=j+1) $fwrite(fout_debug, "%15d ", gold_scale[i][j]);
 		$fwrite(fout_debug, "\n");
 	end
 	$fwrite(fout_debug, "\n");
@@ -402,7 +419,7 @@ task check_ans_task; begin
 		// Wait a cycle
 		@(negedge clk);
 	end
-	latency = latency + 1;
+	//latency = latency + 1;
 
 	for(i=0; i<gold_T; i+=1) begin
 		for(j=0; j<8; j+=1) begin
